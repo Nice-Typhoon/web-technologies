@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Food Construct</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Roboto", sans-serif;
+            margin: 0;
+            font-size: 18px;  
+        }
+
+        main{
+            padding-left: 30px; /* общий отступ слева */
+        }
+
+        header {
+            padding: 20px 0;
+            text-align: center;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 28px; 
+        }
+        nav {
+            margin: 15px 0;
+        }
+
+        nav a:hover {
+            color: blue;
+        }
+
+        nav a {
+            margin-right: 20px;
+            text-decoration: none;
+            color: black;
+            font-weight: 500;
+            font-size: 18px;
+            transition: 0.5s;
+        }
+        .hero img {
+            width: 70%; 
+            display: block;
+            margin: 0 auto;
+        }
+        .content {
+            padding: 20px 0;
+        }
+        h2 {
+            margin-top: 30px;
+            font-size: 22px;
+        }
+        ul {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+        table {
+            width: 95%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 12px;
+            text-align: center;
+            font-size: 18px;
+        }
+        #footer {
+            background: black;
+            color: white;
+            text-align: left;
+            padding: 15px;
+            margin-top: 40px;
+            margin-left: 0;
+            font-size: 18px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    
+    <header>
+        <h1>Food Construct</h1>
+        <nav>
+            <a href="#us">О нас</a>
+            <a href="#">Собрать ланч</a>
+            <a href="#">Заказы</a>
+            <a href="#footer">Контакты</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <img src="food.jpg" alt="Еда">
+        </section>
+
+        <div class="content">
+            <h2 id='us'>О нас</h2>
+            <p>Food Construct - доставка бизнес-ланчей в Москве. Мы привезем вам горячую вкусную еду в любую точку города к назначенному времени.</p>
+
+            <h2>Преимущества Food Construct</h2>
+            <ul>
+                <li>Привозим обед к назначенному времени без опозданий</li>
+                <li>Надежно упаковываем блюда в удобные контейнеры бесплатно</li>
+                <li>Доставляем ланчи весь день с 7:00 до 23:00</li>
+            </ul>
+
+            <h2>Топ-5 популярных блюд</h2>
+            <table>
+                <tr>
+                    <th>№</th>
+                    <th>Название</th>
+                    <th>Кол-во заказов в неделю</th>
+                    <th>Цена</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>Лазанья</td>
+                    <td>185</td>
+                    <td>385 ₽</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Том Ям с креветками</td>
+                    <td>161</td>
+                    <td>365 ₽</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Норвежский суп</td>
+                    <td>144</td>
+                    <td>270 ₽</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>Жареная картошка с грибами</td>
+                    <td>132</td>
+                    <td>150 ₽</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>Котлеты из курицы с картофельным пюре</td>
+                    <td>128</td>
+                    <td>225 ₽</td>
+                </tr>
+            </table>
+        </div>
+    </main>
+
+    <footer id="footer">
+        Позвонить нам +7-000-000-00-00
+    </footer>
+</body>
+</html>
