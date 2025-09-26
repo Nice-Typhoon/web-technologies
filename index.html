@@ -5,101 +5,25 @@
     <title>Food Construct</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
-
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: "Roboto", sans-serif;
-            margin: 0;
-            font-size: 18px;  
-        }
-
-        main{
-            padding-left: 30px; /* общий отступ слева */
-        }
-
-        header {
-            padding: 20px 0;
-            text-align: center;
-        }
-        header h1 {
-            margin: 0;
-            font-size: 28px; 
-        }
-        nav {
-            margin: 15px 0;
-        }
-
-        nav a:hover {
-            color: blue;
-        }
-
-        nav a {
-            margin-right: 20px;
-            text-decoration: none;
-            color: black;
-            font-weight: 500;
-            font-size: 18px;
-            transition: 0.5s;
-        }
-        .hero img {
-            width: 70%; 
-            display: block;
-            margin: 0 auto;
-        }
-        .content {
-            padding: 20px 0;
-        }
-        h2 {
-            margin-top: 30px;
-            font-size: 22px;
-        }
-        ul {
-            list-style-type: disc;
-            padding-left: 20px;
-        }
-        table {
-            width: 95%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
-        table, th, td {
-            border: 1px solid black;
-        }
-        th, td {
-            padding: 12px;
-            text-align: center;
-            font-size: 18px;
-        }
-        #footer {
-            background: black;
-            color: white;
-            text-align: left;
-            padding: 15px;
-            margin-top: 40px;
-            margin-left: 0;
-            font-size: 18px;
-            text-align: center;
-        }
     </style>
+    <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
     
     <header>
         <h1>Food Construct</h1>
         <nav>
-            <a href="#us">О нас</a>
-            <a href="#">Собрать ланч</a>
+            <a href="index.html" id="active">О нас</a>
+            <a href="lunch.html">Собрать ланч</a>
             <a href="#">Заказы</a>
             <a href="#footer">Контакты</a>
         </nav>
+
     </header>
 
     <main>
         <section class="hero">
-            <img src="food.jpg" alt="Еда">
+            <img src="images/food.jpg" alt="Еда">
         </section>
 
         <div class="content">
