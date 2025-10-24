@@ -25,15 +25,136 @@
     </header>
 
     <main>
+        <!-- Доступные варианты ланча -->
+        <section id="lunch_options">
+            <h2>Доступные варианты ланча</h2>
+            <div class="lunch-variants-container">
+                <!-- Вариант 1: Суп + Главное блюдо + Салат + Напиток -->
+                <div class="lunch-variant">
+                    <div class="combo-item">
+                        <img src="../images/icons/soup.png" alt="Суп" class="combo-icon">
+                        <span>Суп</span>
+                    </div>
+                    <div class="combo-item">
+                        <img src="../images/icons/main.png" alt="Главное блюдо" class="combo-icon">
+                        <span>Главное блюдо</span>
+                    </div>
+                    <div class="combo-item">
+                        <img src="../images/icons/salad.png" alt="Салат" class="combo-icon">
+                        <span>Салат</span>
+                    </div>
+                    <div class="combo-item">
+                        <img src="../images/icons/drink.png" alt="Напиток" class="combo-icon">
+                        <span>Напиток</span>
+                    </div>
+                </div>
+
+                <!-- Вариант 2: Суп + Главное блюдо + Напиток -->
+                <div class="lunch-variant">
+                    <div class="combo-item">
+                        <img src="../images/icons/soup.png" alt="Суп" class="combo-icon">
+                        <span>Суп</span>
+                    </div>
+                    <div class="combo-item">
+                        <img src="../images/icons/main.png" alt="Главное блюдо" class="combo-icon">
+                        <span>Главное блюдо</span>
+                    </div>
+                    <div class="combo-item">
+                        <img src="../images/icons/drink.png" alt="Напиток" class="combo-icon">
+                        <span>Напиток</span>
+                    </div>
+                </div>
+
+                <!-- Вариант 3: Суп + Салат + Напиток -->
+                <div class="lunch-variant">
+                    <div class="combo-item">
+                        <img src="../images/icons/soup.png" alt="Суп" class="combo-icon">
+                        <span>Суп</span>
+                    </div>
+                    <div class="combo-item">
+                        <img src="../images/icons/salad.png" alt="Салат" class="combo-icon">
+                        <span>Салат</span>
+                    </div>
+                    <div class="combo-item">
+                        <img src="../images/icons/drink.png" alt="Напиток" class="combo-icon">
+                        <span>Напиток</span>
+                    </div>
+                </div>
+
+                <!-- Вариант 4: Главное блюдо + Салат + Напиток -->
+                <div class="lunch-variant">
+                    <div class="combo-item">
+                        <img src="../images/icons/main.png" alt="Главное блюдо" class="combo-icon">
+                        <span>Главное блюдо</span>
+                    </div>
+                    <div class="combo-item">
+                        <img src="../images/icons/salad.png" alt="Салат" class="combo-icon">
+                        <span>Салат</span>
+                    </div>
+                    <div class="combo-item">
+                        <img src="../images/icons/drink.png" alt="Напиток" class="combo-icon">
+                        <span>Напиток</span>
+                    </div>
+                </div>
+
+                <!-- Вариант 5: Главное блюдо + Напиток -->
+                <div class="lunch-variant">
+                    <div class="combo-item">
+                        <img src="../images/icons/main.png" alt="Главное блюдо" class="combo-icon">
+                        <span>Главное блюдо</span>
+                    </div>
+                    <div class="combo-item">
+                        <img src="../images/icons/drink.png" alt="Напиток" class="combo-icon">
+                        <span>Напиток</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="dessert-info">
+                <img src="../images/icons/desert.png" alt="Десерт" class="dessert-icon">
+                <p>Десерты можно добавлять в любой вид ланча</p>
+            </div>
+        </section>
+
         <section id="set_lunch">
             <h2>Выберите суп</h2>
+            <div class="filters">
+                <button class="filter-btn" data-kind="fish">рыбный</button>
+                <button class="filter-btn" data-kind="meat">мясной</button>
+                <button class="filter-btn" data-kind="veg">вегетарианский</button>
+            </div>
             <div class="menu-grid" id="soupsGrid"></div>
 
             <h2>Выберите главное блюдо</h2>
+            <div class="filters">
+                <button class="filter-btn" data-kind="fish">рыбное</button>
+                <button class="filter-btn" data-kind="meat">мясное</button>
+                <button class="filter-btn" data-kind="veg">вегетарианское</button>
+            </div>
             <div class="menu-grid" id="mainsGrid"></div>
 
+            <h2>Выберите салат или стартер</h2>
+            <div class="filters">
+                <button class="filter-btn" data-kind="fish">рыбный</button>
+                <button class="filter-btn" data-kind="meat">мясной</button>
+                <button class="filter-btn" data-kind="veg">вегетарианский</button>
+            </div>
+            <div class="menu-grid" id="saladsGrid"></div>
+
             <h2>Выберите напиток</h2>
+            <div class="filters">
+                <button class="filter-btn" data-kind="cold">холодный</button>
+                <button class="filter-btn" data-kind="hot">горячий</button>
+            </div>
             <div class="menu-grid" id="beveragesGrid"></div>
+
+            <h2>Выберите десерт</h2>
+            <div class="filters">
+                <button class="filter-btn" data-kind="small">маленькая порция</button>
+                <button class="filter-btn" data-kind="medium">средняя порция</button>
+                <button class="filter-btn" data-kind="large">большая порция</button>
+            </div>
+            <div class="menu-grid" id="dessertsGrid"></div>
         </section>
 
         <!-- Форма заказа -->
@@ -53,9 +174,17 @@
                                 <label>Главное блюдо:</label>
                                 <div class="summary-line" id="summary-main_course">Блюдо не выбрано</div>
                             </div>
+                            <div class="form-group" data-cat="salads" style="display:none">
+                                <label>Салат или стартер:</label>
+                                <div class="summary-line" id="summary-salads">Блюдо не выбрано</div>
+                            </div>
                             <div class="form-group" data-cat="beverages" style="display:none">
                                 <label>Напиток:</label>
                                 <div class="summary-line" id="summary-beverages">Напиток не выбран</div>
+                            </div>
+                            <div class="form-group" data-cat="desserts" style="display:none">
+                                <label>Десерт:</label>
+                                <div class="summary-line" id="summary-desserts">Десерт не выбран</div>
                             </div>
                             <div class="form-group" id="order-total" style="display:none">
                                 <label>Стоимость заказа:</label>
