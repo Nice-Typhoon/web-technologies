@@ -16,16 +16,71 @@
     desserts: 'Десерт',
   };
 
+  const CATEGORY_KEYS = ['soup', 'main_course', 'salads', 'beverages', 'desserts'];
+
+  const STORAGE_KEY = 'orderSelection';
+
+  function loadSelectionFromStorage() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return {};
+      const parsed = JSON.parse(raw);
+      return typeof parsed === 'object' && parsed ? parsed : {};
+    } catch (_) {
+      return {};
+    }
+  }
+
+  function saveSelectionToStorage(selectionObj) {
+    const idsOnly = {};
+    CATEGORY_KEYS.forEach((cat) => {
+      const dish = selectionObj[cat];
+      if (dish && (dish.id || dish.keyword)) {
+        idsOnly[cat] = dish.id ?? dish.keyword;
+      } else {
+        idsOnly[cat] = null;
+      }
+    });
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(idsOnly));
+    } catch (_) {}
+  }
+
   function sortDishesAlphabetically(dishes) {
     return [...dishes].sort((a, b) => a.name.localeCompare(b.name, 'ru'));
+  }
+
+  function getImageFallbacks(src) {
+    const hasProtocol = /^https?:\/\//.test(src);
+    const hasExt = /\.(jpg|jpeg|png|webp)$/i.test(src);
+    if (!hasProtocol) {
+      const base = src.replace(/\.(jpg|jpeg|png|webp)$/i, '');
+      return [
+        `${base}.jpg`,
+        `${base}.jpeg`,
+        `${base}.png`,
+        base,
+      ];
+    }
+    if (hasExt) {
+      return [src];
+    }
+    return [
+      src,
+      `${src}.jpg`,
+      `${src}.jpeg`,
+      `${src}.png`,
+    ];
   }
 
   function buildCard(dish) {
     const item = document.createElement('div');
     item.className = 'menu-item';
     item.setAttribute('data-dish', dish.keyword);
+    const fallbacks = getImageFallbacks(dish.image);
+    const initialSrc = fallbacks[0];
     item.innerHTML = `
-      <img src="${dish.image}.jpg" alt="${dish.name}">
+      <img alt="${dish.name}">
       <div class="menu-info">
         <p class="price">${dish.price}₽</p>
         <p class="name">${dish.name}</p>
@@ -33,6 +88,19 @@
         <button class="add-btn" type="button">Добавить</button>
       </div>
     `;
+    const img = item.querySelector('img');
+    img.referrerPolicy = 'no-referrer';
+    img.loading = 'lazy';
+    img.src = initialSrc;
+    img.dataset.fallbackIndex = '0';
+    img.addEventListener('error', () => {
+      const idx = parseInt(img.dataset.fallbackIndex || '0', 10);
+      const next = idx + 1;
+      if (next < fallbacks.length) {
+        img.dataset.fallbackIndex = String(next);
+        img.src = fallbacks[next];
+      }
+    });
     return item;
   }
 
@@ -76,7 +144,7 @@
 
     nothing.style.display = hasAny ? 'none' : '';
 
-    ['soup', 'main_course', 'salads', 'beverages', 'desserts'].forEach((cat) => {
+    CATEGORY_KEYS.forEach((cat) => {
       const holder = document.querySelector(`#selectedSummary [data-cat="${cat}"]`);
       if (!holder) return;
       holder.style.display = hasAny ? '' : 'none';
@@ -89,6 +157,8 @@
     } else {
       totalBlock.style.display = 'none';
     }
+
+    updateStickyPanel(total, hasAny);
   }
 
   function writeSummary(cat, dish) {
@@ -118,6 +188,7 @@
       selected[dish.category] = dish;
       writeSummary(dish.category, dish);
       updateSummaryVisibility();
+      saveSelectionToStorage(selected);
     });
   }
 
@@ -197,11 +268,93 @@
   }
 
   function init() {
-    if (!window.DISHES) return;
-    renderMenu();
-    handleGlobalClicks();
-    handleFilterClicks();
-    updateSummaryVisibility();
+    const start = (dishes) => {
+      window.DISHES = dishes;
+      restoreSelection(dishes);
+      renderMenu();
+      handleGlobalClicks();
+      handleFilterClicks();
+      updateSummaryVisibility();
+      renderOrderPageItems();
+    };
+
+    if (Array.isArray(window.DISHES) && window.DISHES.length) {
+      start(window.DISHES);
+      return;
+    }
+
+    if (typeof window.loadDishes === 'function') {
+      window.loadDishes()
+        .then((d) => start(d))
+        .catch((err) => {
+          console.error(err);
+        });
+    }
+  }
+
+  function restoreSelection(dishes) {
+    const stored = loadSelectionFromStorage();
+    CATEGORY_KEYS.forEach((cat) => {
+      const idOrKeyword = stored[cat];
+      if (idOrKeyword == null) return;
+      const dish = dishes.find((d) => d.id === idOrKeyword || d.keyword === idOrKeyword);
+      if (dish) {
+        selected[cat] = dish;
+        writeSummary(cat, dish);
+      }
+    });
+  }
+
+  // Sticky checkout panel on set-lunch page
+  function updateStickyPanel(total, hasAny) {
+    const panel = document.getElementById('checkoutPanel');
+    if (!panel) return;
+    const totalSpan = panel.querySelector('#checkoutTotal');
+    const link = panel.querySelector('#goToCheckout');
+    totalSpan.textContent = String(total);
+    panel.style.display = hasAny ? '' : 'none';
+
+    const validation = window.validateOrder ? window.validateOrder(selected) : { valid: !!hasAny };
+    if (validation.valid) {
+      link.removeAttribute('aria-disabled');
+      link.classList.remove('disabled');
+    } else {
+      link.setAttribute('aria-disabled', 'true');
+      link.classList.add('disabled');
+    }
+  }
+
+  // Render selected items with delete on order page
+  function renderOrderPageItems() {
+    const grid = document.getElementById('orderItemsGrid');
+    const emptyText = document.getElementById('orderItemsEmpty');
+    if (!grid) return;
+
+    grid.innerHTML = '';
+    const chosen = CATEGORY_KEYS.map((c) => selected[c]).filter(Boolean);
+    if (chosen.length === 0) {
+      if (emptyText) emptyText.style.display = '';
+      return;
+    }
+    if (emptyText) emptyText.style.display = 'none';
+
+    chosen.forEach((dish) => {
+      const card = buildCard(dish);
+      const btn = card.querySelector('.add-btn');
+      if (btn) {
+        btn.textContent = 'Удалить';
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          selected[dish.category] = null;
+          saveSelectionToStorage(selected);
+          card.remove();
+          writeSummary(dish.category, null);
+          updateSummaryVisibility();
+          renderOrderPageItems();
+        });
+      }
+      grid.appendChild(card);
+    });
   }
 
   if (document.readyState === 'loading') {
@@ -303,6 +456,37 @@
 
     return { valid: false, type: 'MISSING_MAIN' };
   }
+  // Построение payload для заказа
+  function buildOrderPayload(form, selectedDishes) {
+    const get = (id) => form.querySelector(`#${id}`);
+    const fullName = get('name') ? get('name').value.trim() : '';
+    const email = get('email') ? get('email').value.trim() : '';
+    const subscribe = get('newsletter') ? get('newsletter').checked : false;
+    const phone = get('phone') ? get('phone').value.trim() : '';
+    const deliveryAddress = get('address') ? get('address').value.trim() : '';
+    const comments = get('comments') ? get('comments').value.trim() : '';
+    const asap = get('delivery_asap') && get('delivery_asap').checked;
+    const scheduled = get('delivery_scheduled') && get('delivery_scheduled').checked;
+    const time = get('delivery_time_input') ? get('delivery_time_input').value : '';
+
+    const payload = {
+      full_name: fullName,
+      email,
+      subscribe: subscribe ? 1 : 0,
+      phone,
+      delivery_address: deliveryAddress,
+      delivery_type: asap ? 'now' : (scheduled ? 'by_time' : 'now'),
+      delivery_time: scheduled ? time : undefined,
+      comment: comments || undefined,
+      soup_id: selectedDishes.soup ? selectedDishes.soup.id : undefined,
+      main_course_id: selectedDishes.main_course ? selectedDishes.main_course.id : undefined,
+      salad_id: selectedDishes.salads ? selectedDishes.salads.id : undefined,
+      drink_id: selectedDishes.beverages ? selectedDishes.beverages.id : undefined,
+      dessert_id: selectedDishes.desserts ? selectedDishes.desserts.id : undefined,
+    };
+
+    return payload;
+  }
 
   // Функция создания уведомления
   function showNotification(type) {
@@ -358,8 +542,51 @@
       return false;
     }
 
-    // Если заказ валиден, отправляем форму
-    e.target.submit();
+    // Если заказ валиден, отправляем запрос на API
+    const form = e.target;
+    const apiBase = 'https://edu.std-900.ist.mospolytech.ru';
+    let apiKey = localStorage.getItem('api_key') || '';
+    if (!apiKey) {
+      try {
+        const k = window.prompt('Введите ваш API Key для оформления заказа');
+        if (k) {
+          apiKey = k.trim();
+          localStorage.setItem('api_key', apiKey);
+        }
+      } catch (_) {}
+    }
+    if (!apiKey) {
+      alert('API Key не указан. Невозможно отправить заказ.');
+      return false;
+    }
+
+    const payload = buildOrderPayload(form, currentSelected);
+    const url = `${apiBase}/labs/api/orders?api_key=${encodeURIComponent(apiKey)}`;
+
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    })
+    .then(async (res) => {
+      if (!res.ok) {
+        const text = await res.text().catch(() => '');
+        throw new Error(text || 'Ошибка при создании заказа');
+      }
+      return res.json();
+    })
+    .then(() => {
+      // Успех: очищаем выбранные блюда и перенаправляем/уведомляем
+      try { localStorage.removeItem('orderSelection'); } catch (_) {}
+      alert('Заказ успешно создан!');
+      window.location.href = 'index.html';
+    })
+    .catch((err) => {
+      console.error(err);
+      alert('Не удалось оформить заказ: ' + err.message);
+    });
   }
 
   // Инициализация системы проверки
@@ -373,6 +600,7 @@
   // Экспорт функций для доступа из основного скрипта
   window.validateOrder = validateOrder;
   window.showNotification = showNotification;
+  window.buildOrderPayload = buildOrderPayload;
 
   // Инициализация при загрузке страницы
   if (document.readyState === 'loading') {
@@ -381,3 +609,4 @@
     initOrderValidation();
   }
 })();
+

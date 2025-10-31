@@ -13,22 +13,76 @@
         <h1>Food Construct</h1>
         <nav>
             <a href="index.html">О нас</a>
-            <a href="lunch/set-lunch.html" id="active">Собрать ланч</a>
-            <a href="order-form.html">Заказы</a>
+            <a href="lunch.html" id="active">Собрать ланч</a>
+            <a href="#">Заказы</a>
             <a href="#footer">Контакты</a>
         </nav>
     </header>
 
     <main>
-        <div style="text-align: center; padding: 50px;">
-            <h2>Добро пожаловать в Food Construct!</h2>
-            <p>Для выбора блюд и оформления заказа перейдите на страницу "Собрать ланч"</p>
-            <a href="lunch/set-lunch.html" style="display: inline-block; background-color: #4CAF50; color: white; padding: 15px 30px; text-decoration: none; border-radius: 10px; margin-top: 20px;">Перейти к выбору блюд</a>
-        </div>
+        <!-- Супы -->
+        <section>
+            <h2>Супы</h2>
+            <div class="dishes-grid">
+                <div class="dish">
+                    <img src="images/soup1.jpg" alt="Суп">
+                    <div class="dish-info">
+                        <p class="name">Том Ям</p>
+                        <p class="weight">350 мл</p>
+                        <p class="price">365 ₽</p>
+                    </div>
+                    <button>Добавить</button>
+                </div>
+                <div class="dish">
+                    <img src="images/soup2.jpg" alt="Суп">
+                    <div class="dish-info">
+                        <p class="name">Норвежский суп</p>
+                        <p class="weight">300 мл</p>
+                        <p class="price">270 ₽</p>
+                    </div>
+                    <button>Добавить</button>
+                </div>
+                <!-- ещё блюда -->
+            </div>
+        </section>
+
+        <!-- Главные блюда -->
+        <section>
+            <h2>Главные блюда</h2>
+            <div class="dishes-grid">
+                <div class="dish">
+                    <img src="images/main1.jpg" alt="Лазанья">
+                    <div class="dish-info">
+                        <p class="name">Лазанья</p>
+                        <p class="weight">250 г</p>
+                        <p class="price">385 ₽</p>
+                    </div>
+                    <button>Добавить</button>
+                </div>
+                <!-- ещё блюда -->
+            </div>
+        </section>
+
+        <!-- Напитки -->
+        <section>
+            <h2>Напитки</h2>
+            <div class="dishes-grid">
+                <div class="dish">
+                    <img src="images/drink1.jpg" alt="Морс">
+                    <div class="dish-info">
+                        <p class="name">Морс клюквенный</p>
+                        <p class="weight">500 мл</p>
+                        <p class="price">120 ₽</p>
+                    </div>
+                    <button>Добавить</button>
+                </div>
+                <!-- ещё напитки -->
+            </div>
+        </section>
     </main>
 
     <footer id="footer">
-        <div style="margin-top:40px;">Позвонить нам +7-000-000-00-00</div>
+        Позвонить нам +7-000-000-00-00
     </footer>
 </body>
 </html>
