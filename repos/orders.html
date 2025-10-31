@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Мои заказы - Food Construct</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+    </style>
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <header>
+        <h1>Food Construct</h1>
+        <nav>
+            <a href="/index.html">О нас</a>
+            <a href="/lunch/set-lunch.html">Собрать ланч</a>
+            <a href="/order-form.html">Оформить заказ</a>
+            <a href="/orders.html" id="active">Заказы</a>
+            <a href="#footer">Контакты</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="orders-container">
+            <h2>Мои заказы</h2>
+            <p id="orders-empty" style="display:none;">У вас пока нет заказов.</p>
+            <table class="orders-table" id="ordersTable">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Дата</th>
+                        <th>Состав</th>
+                        <th>Стоимость, ₽</th>
+                        <th>Время доставки</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- rows will be injected here -->
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <footer id="footer">
+        Позвонить нам +7-000-000-00-00
+    </footer>
+
+    <!-- root for modals and notifications -->
+    <div id="modalRoot"></div>
+    <script src="js/orders.js"></script>
+</body>
+</html>

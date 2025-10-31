@@ -2,13 +2,20 @@
             box-sizing: border-box;
         }
 
+        html, body {
+            height: 100%;
+        }
         body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
             font-family: "Roboto", sans-serif;
             margin: 0;
-            font-size: 18px;  
+            font-size: 18px;
         }
 
         main{
+            flex: 1 0 auto;
             padding-left: 30px; /* общий отступ слева */
         }
 
@@ -68,12 +75,11 @@
         #footer {
             background: black;
             color: white;
-            text-align: left;
+            text-align: center;
             padding: 15px;
-            margin-top: 40px;
+            margin-top: auto;
             margin-left: 0;
             font-size: 18px;
-            text-align: center;
         }
 
         @media (max-width: 600px) {
@@ -109,4 +115,103 @@
             .content {
                 padding: 10px 0;
             }
+        }
+
+        /* Orders page styles */
+        .orders-container {
+            padding: 20px 0;
+        }
+        .orders-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        .orders-table th, .orders-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+            vertical-align: middle;
+            font-size: 16px;
+        }
+        .orders-table th {
+            background: #f6f6f6;
+        }
+        .orders-actions button {
+            margin-right: 6px;
+            padding: 6px 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            background: white;
+            cursor: pointer;
+        }
+        .orders-actions button:hover {
+            background: #f0f0f0;
+        }
+
+        /* Modal and overlay */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.45);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+        .modal {
+            width: 90%;
+            max-width: 760px;
+            background: #fff;
+            border-radius: 10px;
+            padding: 18px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            position: relative;
+        }
+        .modal .modal-close {
+            position: absolute;
+            top: 10px;
+            right: 12px;
+            background: transparent;
+            border: none;
+            font-size: 22px;
+            cursor: pointer;
+        }
+        .modal .modal-body {
+            max-height: 60vh;
+            overflow: auto;
+            margin-top: 8px;
+            margin-bottom: 12px;
+        }
+        .modal .modal-footer {
+            text-align: right;
+            margin-top: 12px;
+        }
+        .modal .btn-primary {
+            background: tomato;
+            color: #fff;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .modal .btn-secondary {
+            background: #f1f1f1;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-right: 8px;
+        }
+
+        /* Simple toast notifications */
+        .toast {
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            background: rgba(0,0,0,0.85);
+            color: #fff;
+            padding: 10px 14px;
+            border-radius: 6px;
+            z-index: 3000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
