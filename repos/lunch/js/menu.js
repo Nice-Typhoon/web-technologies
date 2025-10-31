@@ -137,12 +137,46 @@
   // Экспортируем объект selected в глобальную область видимости
   window.selected = selected;
 
+  // Пометить/снять пометку для карточек в DOM
+  function unmarkCategoryItems(category) {
+    const items = document.querySelectorAll(`.menu-item[data-dish]`);
+    items.forEach((it) => {
+      const kw = it.getAttribute('data-dish');
+      const dish = DISHES && DISHES.find(d => d.keyword === kw);
+      if (dish && dish.category === category) {
+        it.classList.remove('selected');
+        const btn = it.querySelector('.add-btn');
+        if (btn) btn.textContent = 'Добавить';
+      }
+    });
+  }
+
+  function markItemSelected(category, dish) {
+    if (!dish) return;
+    unmarkCategoryItems(category);
+    const el = document.querySelector(`.menu-item[data-dish="${dish.keyword}"]`);
+    if (el) {
+      el.classList.add('selected');
+      const btn = el.querySelector('.add-btn');
+      if (btn) btn.textContent = 'Выбрано';
+    }
+  }
+
+  function applySelectedMarking() {
+    CATEGORY_KEYS.forEach((cat) => {
+      const dish = selected[cat];
+      if (dish) markItemSelected(cat, dish);
+      else unmarkCategoryItems(cat);
+    });
+  }
+
   function updateSummaryVisibility() {
     const hasAny = Object.values(selected).some(Boolean);
-    const nothing = document.getElementById('nothing-selected');
-    const totalBlock = document.getElementById('order-total');
+    // визуальные пометки карточек (если меню на странице присутствует)
+    try { applySelectedMarking(); } catch (_) {}
 
-    nothing.style.display = hasAny ? 'none' : '';
+    const nothing = document.getElementById('nothing-selected');
+    if (nothing) nothing.style.display = hasAny ? 'none' : '';
 
     CATEGORY_KEYS.forEach((cat) => {
       const holder = document.querySelector(`#selectedSummary [data-cat="${cat}"]`);
@@ -151,16 +185,18 @@
     });
 
     const total = Object.values(selected).reduce((sum, d) => sum + (d ? d.price : 0), 0);
-    if (hasAny) {
-      totalBlock.style.display = '';
-      document.getElementById('orderTotalValue').textContent = String(total);
-    } else {
-      totalBlock.style.display = 'none';
+    const totalBlock = document.getElementById('order-total');
+    const totalValueEl = document.getElementById('orderTotalValue');
+    if (totalBlock) {
+      totalBlock.style.display = hasAny ? '' : 'none';
+    }
+    if (totalValueEl) {
+      totalValueEl.textContent = String(total);
     }
 
     updateStickyPanel(total, hasAny);
   }
-
+  
   function writeSummary(cat, dish) {
     const line = document.getElementById(`summary-${cat}`);
     if (!line) return;
@@ -185,7 +221,10 @@
       const dish = DISHES.find((d) => d.keyword === keyword);
       if (!dish) return;
 
+      // Обновляем выбор в модели
       selected[dish.category] = dish;
+      // Обновляем UI
+      markItemSelected(dish.category, dish);
       writeSummary(dish.category, dish);
       updateSummaryVisibility();
       saveSelectionToStorage(selected);
@@ -269,9 +308,14 @@
 
   function init() {
     const start = (dishes) => {
+      if (!Array.isArray(dishes)) {
+        console.error('menu.init: dishes is not an array', dishes);
+        dishes = [];
+      }
       window.DISHES = dishes;
-      restoreSelection(dishes);
+      // Сначала отрисовываем меню (DOM карточек), затем восстанавливаем выбор и пометки
       renderMenu();
+      restoreSelection(dishes);
       handleGlobalClicks();
       handleFilterClicks();
       updateSummaryVisibility();
@@ -287,8 +331,12 @@
       window.loadDishes()
         .then((d) => start(d))
         .catch((err) => {
-          console.error(err);
+          console.error('menu.init: loadDishes failed', err);
+          start([]); // запускаем с пустым массивом, чтобы интерфейс не ломался
         });
+    } else {
+      console.warn('menu.init: no loadDishes function and no DISHES present');
+      start([]); // безопасный fallback
     }
   }
 
@@ -303,18 +351,52 @@
         writeSummary(cat, dish);
       }
     });
+    // После восстановления применяем визуальные пометки (предполагается, что renderMenu уже выполнен)
+    try {
+      applySelectedMarking();
+      updateSummaryVisibility();
+    } catch (_) {}
   }
 
   // Sticky checkout panel on set-lunch page
+  function createCheckoutPanelIfMissing() {
+    // Создаём панель ТОЛЬКО если на странице есть контейнер set_lunch (страница "Собрать ланч")
+    const isSetLunch = !!document.getElementById('set_lunch');
+    const existing = document.getElementById('checkoutPanel');
+    if (!isSetLunch) {
+      // Если панель есть, но мы не на странице set-lunch — удаляем её
+      if (existing) existing.remove();
+      return null;
+    }
+
+    if (existing) return existing;
+
+    const panel = document.createElement('div');
+    panel.id = 'checkoutPanel';
+    panel.className = 'checkout-panel';
+    panel.innerHTML = `
+      <div class="checkout-inner">
+        <div class="total">Итого: <span id="checkoutTotal">0</span>₽</div>
+        <a id="goToCheckout" class="checkout-link disabled" aria-disabled="true" href="../order-form.html">Перейти к оформлению</a>
+      </div>
+    `;
+    // Помещаем внутрь <main>, чтобы position:sticky работал корректно
+    const container = document.querySelector('main') || document.body;
+    container.appendChild(panel);
+    return panel;
+  }
+
   function updateStickyPanel(total, hasAny) {
-    const panel = document.getElementById('checkoutPanel');
-    if (!panel) return;
+    const panel = createCheckoutPanelIfMissing();
+    if (!panel) return; // если панели нет (мы не на странице set-lunch), ничего не делаем
     const totalSpan = panel.querySelector('#checkoutTotal');
     const link = panel.querySelector('#goToCheckout');
-    totalSpan.textContent = String(total);
-    panel.style.display = hasAny ? '' : 'none';
+    if (totalSpan) totalSpan.textContent = String(total);
+    // безопасно выставляем отображение панели
+    try { panel.style.display = hasAny ? '' : 'none'; } catch (_) {}
 
     const validation = window.validateOrder ? window.validateOrder(selected) : { valid: !!hasAny };
+    if (!link) return;
     if (validation.valid) {
       link.removeAttribute('aria-disabled');
       link.classList.remove('disabled');
@@ -413,10 +495,19 @@
       return { valid: false, type: 'NOTHING_SELECTED' };
     }
 
-    // Проверка на соответствие одному из валидных вариантов
+    // Десерты считаем опциональными — при проверке комбинаций их игнорируем
+    const selectedCore = selectedCategories.filter(cat => cat !== 'desserts');
+
+    // Если выбраны только десерты (без основного набора) — считаем как отсутствие основного блюда
+    if (selectedCore.length === 0) {
+      return { valid: false, type: 'MISSING_MAIN' };
+    }
+
+    // Проверяем, соответствует ли выбранный набор одному из валидных вариантов.
+    // Теперь сравниваем по "ядру" (без десертов) — допускаются дополнительные десерты.
     const isValidCombination = VALID_LUNCH_COMBINATIONS.some(combination => {
-      return combination.every(category => selectedCategories.includes(category)) &&
-             selectedCategories.every(category => combination.includes(category));
+      return combination.every(category => selectedCore.includes(category)) &&
+             selectedCore.every(category => combination.includes(category));
     });
 
     if (isValidCombination) {
@@ -444,16 +535,12 @@
       return { valid: false, type: 'MISSING_MAIN_OR_SALAD' };
     }
 
-    // Если нет напитка
+    // Если нет напитка (и остальные условия не дали валидную комбинацию)
     if (!hasDrink) {
       return { valid: false, type: 'MISSING_DRINK' };
     }
 
-    // Если есть все основные блюда, но комбинация не валидна
-    if (hasSoup && hasMain && hasSalad && hasDrink) {
-      return { valid: false, type: 'MISSING_MAIN' };
-    }
-
+    // По умолчанию — считаем, что не выбран главный элемент
     return { valid: false, type: 'MISSING_MAIN' };
   }
   // Построение payload для заказа
@@ -545,19 +632,11 @@
     // Если заказ валиден, отправляем запрос на API
     const form = e.target;
     const apiBase = 'https://edu.std-900.ist.mospolytech.ru';
-    let apiKey = localStorage.getItem('api_key') || '';
+    // Используем заранее известный API-ключ, если в localStorage нет ключа — сохраняем его
+    let apiKey = localStorage.getItem('api_key');
     if (!apiKey) {
-      try {
-        const k = window.prompt('Введите ваш API Key для оформления заказа');
-        if (k) {
-          apiKey = k.trim();
-          localStorage.setItem('api_key', apiKey);
-        }
-      } catch (_) {}
-    }
-    if (!apiKey) {
-      alert('API Key не указан. Невозможно отправить заказ.');
-      return false;
+      apiKey = '008a1fd3-4252-4872-bd82-defe847c251c';
+      try { localStorage.setItem('api_key', apiKey); } catch (_) {}
     }
 
     const payload = buildOrderPayload(form, currentSelected);

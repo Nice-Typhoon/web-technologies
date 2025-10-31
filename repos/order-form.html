@@ -6,6 +6,7 @@
     <title>Форма заказа Food Construct</title>
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/lunch.css">
+    <link rel="stylesheet" href="lunch/set-lunch-styles.css">
 </head>
 <body>
     <header>
@@ -20,41 +21,21 @@
     <main>
         <section id="order_form">
                 <h2>Сделать заказ</h2>
+                <!-- Заголовок слева -->
+                <div style="display:flex; justify-content:flex-start; align-items:center; gap:12px;">
+                    <h3 style="margin:0;">Состав заказа</h3>
+                </div>
+
+                <!-- Сетка карточек (как на странице Собрать ланч). JS заполнит #orderItemsGrid.
+                     Если пусто, скрипт покажет #orderItemsEmpty -->
+                <div id="orderItemsGrid" class="menu-grid" style="margin:12px 0 20px;"></div>
+                <p id="orderItemsEmpty" style="display:none; margin-top:12px">
+                    Ничего не выбрано. Чтобы добавить блюда в заказ, перейдите на страницу
+                    <a href="lunch/set-lunch.html">Собрать ланч</a>.
+                </p>
+
                 <form action="https://httpbin.org/post" method="post" id="orderForm">
                     <div class="form-container">
-                        <!-- Блок с заказом клиента -->
-                        <div class="order-block">
-                            <h3>Ваш заказ</h3>
-                            <div id="selectedSummary" class="order-summary">
-                                <div class="form-group" data-cat="soup" style="display:none">
-                                    <label>Суп:</label>
-                                    <div class="summary-line" id="summary-soup">Блюдо не выбрано</div>
-                                </div>
-                                <div class="form-group" data-cat="main_course" style="display:none">
-                                    <label>Главное блюдо:</label>
-                                    <div class="summary-line" id="summary-main_course">Блюдо не выбрано</div>
-                                </div>
-                                <div class="form-group" data-cat="beverages" style="display:none">
-                                    <label>Напиток:</label>
-                                    <div class="summary-line" id="summary-beverages">Напиток не выбран</div>
-                                </div>
-                                <div class="form-group" id="order-total" style="display:none">
-                                    <label>Стоимость заказа:</label>
-                                    <div class="summary-line"><span id="orderTotalValue">0</span>₽</div>
-                                </div>
-                                <div class="form-group" id="nothing-selected">
-                                    <div class="summary-line">Ничего не выбрано</div>
-                                </div>
-                            </div>
-                            <!-- Комментарии к заказу -->
-                            <div class="form-group">
-                                <label for="comments">Комментарии к заказу:</label>
-                                <textarea id="comments" name="comments" rows="4" cols="50" maxlength="500" placeholder="Дополнительные пожелания к заказу (максимум 500 символов)"></textarea>
-                                <div class="char-counter">
-                                    <span id="charCount">0</span>/500 символов
-                                </div>
-                            </div>
-                        </div>
                         <!-- Блок с данными клиента -->
                         <div class="client-data-block">
                             <h3>Ваши данные</h3>
@@ -98,6 +79,17 @@
                                 <small class="delivery-info">Доступное время доставки с 7:00 до 23:00</small>
                             </div>
                         </div>
+                        <!-- Комментарии к заказу -->
+                        <div class="order-block">
+                            <h3 style="visibility:hidden; height:0; margin:0; padding:0;">placeholder</h3>
+                            <div class="form-group">
+                                <label for="comments">Комментарии к заказу:</label>
+                                <textarea id="comments" name="comments" rows="4" cols="50" maxlength="500" placeholder="Дополнительные пожелания к заказу (максимум 500 символов)"></textarea>
+                                <div class="char-counter">
+                                    <span id="charCount">0</span>/500 символов
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <!-- Кнопки формы -->
                     <div class="form-buttons">
@@ -106,9 +98,11 @@
                     </div>
                 </form>
         </section>
-    </main>
+     </main>
     <footer id="footer">
         Позвонить нам +7-000-000-00-00
     </footer>
+    <script src="lunch/js/dishes-data.js"></script>
+    <script src="lunch/js/menu.js"></script>
 </body>
 </html>

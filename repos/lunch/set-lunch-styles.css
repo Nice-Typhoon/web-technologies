@@ -707,3 +707,62 @@ nav a {
         font-size: 1rem;
     }
 }
+
+/* Панель перехода к оформлению заказа на странице Собрать ланч */
+#checkoutPanel {
+    position: sticky;
+    bottom: 0;             /* прилипает к низу видимой области, внутри родителя (main) */
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    z-index: 100;
+    background: rgba(255,255,255,0.98);
+    box-shadow: 0 -8px 20px rgba(0,0,0,0.06);
+    padding: 8px 0;
+}
+
+/* Внутренний контейнер с ограниченной шириной, сумма слева, ссылка справа */
+#checkoutPanel .checkout-inner {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    justify-content: space-between; /* сумма слева, ссылка справа */
+    align-items: center;
+    gap: 20px;
+    padding: 6px 20px;
+    box-sizing: border-box;
+}
+
+/* Увеличенный и левый блок суммы */
+#checkoutPanel .checkout-inner > .total {
+    font-weight: 800;
+    color: #222;
+    font-size: 1.4rem; /* увеличенный размер шрифта */
+    margin-left: 0;
+}
+
+/* Ссылка справа */
+#checkoutPanel .checkout-link {
+    background: #4CAF50;
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+/* Отключённое состояние ссылки */
+#checkoutPanel .checkout-link.disabled,
+#checkoutPanel .checkout-link[aria-disabled="true"] {
+    background: #ccc;
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+/* Подсветка выбранной карточки (не трогать) */
+.menu-item.selected {
+    outline: 3px solid rgba(76,175,80,0.25);
+    transform: translateY(-3px);
+}
