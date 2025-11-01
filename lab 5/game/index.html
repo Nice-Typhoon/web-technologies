@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Математическая Игра</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="game-container" id="gameContainer">
+        <h1>Math Game</h1>
+        
+        <div class="info">
+            <div>Уровень: <span id="levelDisplay">Начальный</span></div>
+            <div class="timer">Время: <span id="timeLeft">5:00</span></div>
+        </div>
+        
+        <div class="question" id="question">Загрузка...</div>
+        
+        <button id="startBtn">Начать игру</button>
+
+        <div class="input-container hidden">
+            <input type="text" id="answerInput" placeholder="Введите ответ" autocomplete="off">
+        </div>
+        
+        <button class="hidden" id="submitBtn">Отправить</button>
+        
+        <div class="results">
+            <div>Правильные: <span id="correctCount">0</span></div>
+            <div>Неправильные: <span id="incorrectCount">0</span></div>
+        </div>
+        
+        <div class="status" id="status"></div>
+        
+        <div class="level-buttons" id="levelButtons">
+            <button id="restartBtn">Перезапустить</button>
+            <button id="quitBtn">Выйти</button>
+        </div>
+        
+        <div id="congratulations" class="hidden">
+            <h2>Поздравляем!</h2>
+            <p id="congratsMessage">Вы успешно завершили игру!</p>
+            <button id="playAgainBtn">Играть снова</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

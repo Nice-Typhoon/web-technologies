@@ -1,0 +1,12 @@
+/* Небольшие кастомизации для landing.html */
+.hero-img {
+  max-width: 520px;
+  width: 100%;
+  object-fit: cover;
+}
+section h2.h3 {
+  margin-bottom: 1rem;
+}
+@media (max-width: 767px) {
+  .hero-img { max-width: 100%; margin-top: 1rem; }
+}
